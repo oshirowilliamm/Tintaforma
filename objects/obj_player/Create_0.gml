@@ -14,7 +14,8 @@ estado = noone;
 
 
 dir = 1; //direção para espelhar o player
-colisao = [obj_colisor, layer_tilemap_get_id("Level")];
+colisao = [layer_tilemap_get_id("Level"), obj_colisor];
+
 
 
 //metodos de movimentação
@@ -156,11 +157,27 @@ estado_jump = function()
     if (vspd < 0)
     {
         troca_sprite(spr_player_jump_cima);
+        
+        //removendo a colisão oneway
+        if (array_contains(colisao, obj_oneway))
+        {
+            var _pos = array_get_index(colisao, obj_oneway);
+            array_delete(colisao, _pos, 1);
+        }
     }
     //sprite pulando baixo
     else
     {
         troca_sprite(spr_player_jump_baixo);
+        
+        //adicionando a colisão oneway
+        if (!place_meeting(x, y, obj_oneway))
+        {
+            if (!array_contains(colisao, obj_oneway))
+            {
+                array_push(colisao, obj_oneway);
+            }
+        }
     }
     
     //saindo do estado
@@ -182,18 +199,24 @@ estado_jump = function()
 //estados powerup
 estado_powerup_inicio = function()
 {
+    hspd = 0;
+    vspd = 0;
     troca_sprite(spr_player_powerup_inicio);
     troca_estado_animacao(estado_powerup_meio);
 }
 
 estado_powerup_meio = function()
 {
+    hspd = 0;
+    vspd = 0;
     troca_sprite(spr_player_powerup_meio);
     troca_estado_animacao(estado_powerup_fim);
 }
 
 estado_powerup_fim = function()
 {
+    hspd = 0;
+    vspd = 0;
     troca_sprite(spr_player_powerup_fim);
     troca_estado_animacao(estado_idle);
 }

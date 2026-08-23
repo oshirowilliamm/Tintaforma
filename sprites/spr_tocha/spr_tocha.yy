@@ -31,8 +31,8 @@
   "nineSlice":null,
   "origin":4,
   "parent":{
-    "name":"Cenario",
-    "path":"folders/Sprites/Cenario.yy",
+    "name":"Decoracao",
+    "path":"folders/Sprites/Level/Decoracao.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",
