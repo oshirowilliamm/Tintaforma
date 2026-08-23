@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_screenshake",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_screenshake",
+  "parent":{
+    "name":"Screenshake",
+    "path":"folders/Efeitos/Screenshake.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

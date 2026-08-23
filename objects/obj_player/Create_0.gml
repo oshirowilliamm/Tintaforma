@@ -1,3 +1,6 @@
+//efeitos
+inicia_efeito_squash();
+
 //velocidade e aplica_velocidade
 max_hspd = 2;
 hspd = 0;
@@ -10,12 +13,17 @@ chao = false;
 estado = noone;
 
 
+dir = 1; //direção para espelhar o player
+colisao = [obj_colisor, layer_tilemap_get_id("Level")];
+
+
 //metodos de movimentação
 inputs = function()
 {
     left    = keyboard_check(ord("A"));
     right   = keyboard_check(ord("D"));
     jump    = keyboard_check_pressed(vk_space);
+    tinta   = keyboard_check_pressed(ord("E"));
     
     keyboard_set_map(vk_left, ord("A"));
     keyboard_set_map(vk_right, ord("D"));
@@ -47,8 +55,14 @@ aplica_velocidade = function()
             //criando particula de pulo
             var _part = instance_create_depth(x, y, depth - 1, obj_part_player);
             _part.sprite_index = spr_pulo_particula;
+            
+            //efeito squash
+            efeito_squash(.2, 1.8);
         }
     }
+    
+    //limitando vspd
+    vspd = clamp(vspd, -max_vspd, max_vspd);
     
     ajusta_escala();
 }
@@ -56,19 +70,21 @@ aplica_velocidade = function()
 movimento = function()
 {
     //aplica_velocidade e colisão
-    move_and_collide(hspd, 0, obj_parede, 4); //horizontal
-    move_and_collide(0, vspd, obj_parede, 12); //vertical
+    move_and_collide(hspd, 0, colisao, 4); //horizontal
+    move_and_collide(0, vspd, colisao, 12); //vertical
 }
 
 checa_chao = function()
 {
-    chao = place_meeting(x, y + 1, obj_parede);
+    chao = place_meeting(x, y + 1, colisao);
 }
 
 ajusta_escala = function()
 {
-    if (hspd != 0) image_xscale = sign(hspd);
+    if (hspd != 0) dir = sign(hspd);
 }
+
+
 
 //metodos de estado
 troca_sprite = function(_sprite)
@@ -80,6 +96,16 @@ troca_sprite = function(_sprite)
         image_index = 0;
     }
 }
+
+troca_estado_animacao = function(_estado)
+{
+    if (image_index > image_number - 1)
+    {
+        estado = _estado;
+    }
+}
+
+
 
 //estados de movimentação
 estado_idle = function()
@@ -97,6 +123,9 @@ estado_idle = function()
     //mudando estado para jump
     if (jump) estado = estado_jump;
     if (!chao) estado = estado_jump;
+    
+    //mudando estado para tinta
+    if (tinta) estado = estado_tinta_entrando;
 }
 
 estado_run = function()
@@ -114,6 +143,9 @@ estado_run = function()
     //mudando estado para jump
     if (jump) estado = estado_jump;
     if (!chao) estado = estado_jump;
+    
+    //mudando estado para tinta
+    if (tinta) estado = estado_tinta_entrando;
 }
 
 estado_jump = function()
@@ -138,48 +170,76 @@ estado_jump = function()
         var _part = instance_create_depth(x, y, depth - 1, obj_part_player);
         _part.sprite_index = spr_pouso_particula;
         
+        //efeito squash
+        efeito_squash(1.2, .5);
+        
         estado = estado_idle;
     }
 }
+
+
 
 //estados powerup
 estado_powerup_inicio = function()
 {
     troca_sprite(spr_player_powerup_inicio);
-    
-    if (image_index > image_number - 1)
-    {
-        estado = estado_powerup_meio;
-    }
+    troca_estado_animacao(estado_powerup_meio);
 }
 
 estado_powerup_meio = function()
 {
     troca_sprite(spr_player_powerup_meio);
-    
-    if (image_index > image_number - 1)
-    {
-        estado = estado_powerup_fim;
-    }
+    troca_estado_animacao(estado_powerup_fim);
 }
 
 estado_powerup_fim = function()
 {
     troca_sprite(spr_player_powerup_fim);
-    
-    if (image_index > image_number - 1)
-    {
-        estado = estado_idle;
-    }
+    troca_estado_animacao(estado_idle);
 }
+
+
 
 //estados tinta
 estado_tinta_entrando = function()
 {
     troca_sprite(spr_player_tinta_entrar);
     
-    if (image_index > image_number - 1)
+    //zerando velocidade
+    hspd = 0;
+    
+    //criando particula de tinta entrando
+    if (!instance_exists(obj_part_player))
     {
+        var _part = instance_create_depth(x, y, depth - 1, obj_part_player);
+        _part.sprite_index = spr_tinta_entrar_part;
+    }
+    
+    
+    troca_estado_animacao(estado_tinta_loop);
+}
+
+estado_tinta_loop = function()
+{
+    troca_sprite(spr_player_tinta_loop);
+    
+    //ativando movimento
+    aplica_velocidade();
+    
+    //não caindo da plataforma
+    var _x = x + (hspd * 10);
+    if (!place_meeting(_x, y + 1, colisao))
+    {
+        hspd = 0;
+    }
+    
+    //saindo da tinta quando eu apertar o botao
+    if (tinta) 
+    {
+        //particula de tinta entrando
+        var _part = instance_create_depth(x, y, depth - 1, obj_part_player);
+        _part.sprite_index = spr_tinta_sair_part;
+        
         estado = estado_tinta_saindo;
     }
 }
@@ -188,11 +248,13 @@ estado_tinta_saindo = function()
 {
     troca_sprite(spr_player_tinta_sair);
     
-    if (image_index > image_number - 1)
-    {
-        estado = estado_idle;
-    }
+    //zerando velocidade
+    hspd = 0;
+    
+    troca_estado_animacao(estado_idle);
 }
+
+
 
 //iniciando meu estado
 estado = estado_idle;
