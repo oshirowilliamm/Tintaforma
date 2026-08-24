@@ -1,5 +1,4 @@
 alvo = noone
-destruir = false;
 
 movendo = function()
 {
@@ -25,25 +24,17 @@ explosao = function()
         //setando as variaveis das particulas
         _part.speed = random_range(2, 5);
         _part.direction = random_range(0, 359);
+        _part.image_blend = choose(#80CAF5, #6E92E2, #6E4EC2, #6038A7, #EEE658, #F9A95F);
         _part.alvo = alvo;
     }
 }
 
 destruindo = function()
 {
-    //verificando se pode destruir
-    if (instance_exists(obj_player))
-    {
-        if (obj_player.estado == obj_player.estado_powerup_fim)
-        {
-            destruir = true;
-        }    
-    }
-    
     //destruindo
-    if (destruir) 
+    if (alvo) 
     {
-        image_alpha -= .1;
+        image_alpha -= .008;
         
         if (image_alpha <= 0) instance_destroy();
     }

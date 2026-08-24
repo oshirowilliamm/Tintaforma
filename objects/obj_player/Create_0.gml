@@ -7,15 +7,19 @@ hspd = 0;
 max_vspd = 5;
 vspd = 0;
 grav = .3;
+
+//verifica se ta colidindo com o chao
 chao = false;
+chao_tinta = false;
+layer_tinta = layer_tilemap_get_id("Tile_Tinta");
 
 //variaveis de estado
 estado = noone;
-
+powerup_tinta = false;
 
 dir = 1; //direção para espelhar o player
-colisao = [layer_tilemap_get_id("Level"), obj_colisor];
-
+colisao = [layer_tilemap_get_id("Tile_Level"), obj_colisor];
+chaves = 0;
 
 
 //metodos de movimentação
@@ -78,6 +82,7 @@ movimento = function()
 checa_chao = function()
 {
     chao = place_meeting(x, y + 1, colisao);
+    chao_tinta = place_meeting(x, y + 1, layer_tinta);
 }
 
 ajusta_escala = function()
@@ -116,17 +121,20 @@ estado_idle = function()
     troca_sprite(spr_player_idle);
     
     //mudando estado para run
-    if (right xor left)
-    {
-        estado = estado_run;
-    }
+    if (right xor left) estado = estado_run;
     
     //mudando estado para jump
     if (jump) estado = estado_jump;
     if (!chao) estado = estado_jump;
     
     //mudando estado para tinta
-    if (tinta) estado = estado_tinta_entrando;
+    if (tinta && powerup_tinta && chao_tinta) 
+    {
+        estado = estado_tinta_entrando;
+    }
+    
+    //metodos especiais
+    abre_porta();
 }
 
 estado_run = function()
@@ -136,17 +144,20 @@ estado_run = function()
     troca_sprite(spr_player_run);
     
     //mudando estado para idle
-    if (hspd == 0)
-    {
-        estado = estado_idle;
-    }
+    if (hspd == 0) estado = estado_idle;
     
     //mudando estado para jump
     if (jump) estado = estado_jump;
     if (!chao) estado = estado_jump;
     
     //mudando estado para tinta
-    if (tinta) estado = estado_tinta_entrando;
+    if (tinta && powerup_tinta && chao_tinta) 
+    {
+        estado = estado_tinta_entrando;
+    }
+    
+    //metodos especiais
+    abre_porta();
 }
 
 estado_jump = function()
@@ -210,7 +221,12 @@ estado_powerup_meio = function()
     hspd = 0;
     vspd = 0;
     troca_sprite(spr_player_powerup_meio);
-    troca_estado_animacao(estado_powerup_fim);
+    
+    //saindo do estado se n tem mais particulas entrando em mim
+    if (!instance_exists(obj_part_powerup))
+    {
+        estado = estado_powerup_fim;
+    }
 }
 
 estado_powerup_fim = function()
@@ -245,13 +261,14 @@ estado_tinta_entrando = function()
 estado_tinta_loop = function()
 {
     troca_sprite(spr_player_tinta_loop);
+    mask_index = spr_player_tinta_loop;
     
     //ativando movimento
     aplica_velocidade();
     
-    //não caindo da plataforma
-    var _x = x + (hspd * 10);
-    if (!place_meeting(_x, y + 1, colisao))
+    //limitando o movimento no chao de tinta
+    var _x = x + (hspd * 11);
+    if (!place_meeting(_x, y + 1, layer_tinta))
     {
         hspd = 0;
     }
@@ -259,17 +276,22 @@ estado_tinta_loop = function()
     //saindo da tinta quando eu apertar o botao
     if (tinta) 
     {
-        //particula de tinta entrando
-        var _part = instance_create_depth(x, y, depth - 1, obj_part_player);
-        _part.sprite_index = spr_tinta_sair_part;
-        
-        estado = estado_tinta_saindo;
+        //só saio se n tiver uma colisão em cima de mim
+        if (!place_meeting(x, y - 10, colisao))
+        {
+            //particula de tinta entrando
+            var _part = instance_create_depth(x, y, depth - 1, obj_part_player);
+            _part.sprite_index = spr_tinta_sair_part;
+            
+            estado = estado_tinta_saindo;
+        }
     }
 }
 
 estado_tinta_saindo = function()
 {
     troca_sprite(spr_player_tinta_sair);
+    mask_index = spr_player_idle;
     
     //zerando velocidade
     hspd = 0;
@@ -284,6 +306,28 @@ estado = estado_idle;
 
 
 
+//outros metodos
+abre_porta = function()
+{
+    //colidindo com a porta
+    var _porta = instance_place(x + hspd, y, obj_porta);
+    
+    if (_porta)
+    {
+        //se tem chaves e a porta esta parada
+        if (chaves > 0 && _porta.estado == _porta.estado_parado)
+        {
+            //faz a porta subir
+            _porta.estado = _porta.estado_subindo;
+            
+            //tirando a chave
+            chaves--;
+        }
+    }
+}
+
+
+
 #region DEBUGS
     
     view_player = false;
@@ -295,12 +339,18 @@ estado = estado_idle;
         view_player = dbg_view("Player", true, 20, 80);
         
         //watches
-        dbg_watch(ref_create(id, "vspd"), "vspd");
-        dbg_watch(ref_create(id, "y"), "y");
+        dbg_watch(ref_create(id, "vspd"), "vspd"); //vspd
+        dbg_watch(ref_create(id, "y"), "y"); //y
         
         //sliders
-        dbg_slider(ref_create(id, "max_vspd"), 0, 20, "max_vspd", .1);
+        dbg_slider(ref_create(id, "max_vspd"), 0, 20, "max_vspd", .1); 
         dbg_slider(ref_create(id, "grav"), 0, 1, "grav", .01);
+        
+        //powerup tinta
+        dbg_checkbox(ref_create(id, "powerup_tinta"), "Powerup Tinta"); 
+        
+        //draw mask
+        dbg_checkbox(ref_create(id, "draw_mask"), "Máscara de Colisão");
     }
     
     ativa_debug = function()
@@ -327,6 +377,26 @@ estado = estado_idle;
                     dbg_view_delete(view_player);
                 }
             }
+        }
+    }
+    
+    draw_mask = false
+    desenha_mascara_colisao = function()
+    {
+        if (draw_mask)
+        {
+            draw_set_colour(c_fuchsia);
+            
+            //fundo
+            draw_set_alpha(.2);
+            draw_rectangle(bbox_left, bbox_top, bbox_right, bbox_bottom, 0);
+            
+            //out
+            draw_set_alpha(1);
+            draw_rectangle(bbox_left, bbox_top, bbox_right, bbox_bottom, 1);
+            
+            draw_set_colour(-1);
+            
         }
     }
     

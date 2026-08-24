@@ -31,8 +31,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_powerup_part",
-    "path":"sprites/spr_powerup_part/spr_powerup_part.yy",
+    "name":"spr_particula",
+    "path":"sprites/spr_particula/spr_particula.yy",
   },
   "spriteMaskId":null,
   "visible":true,
