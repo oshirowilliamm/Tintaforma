@@ -43,9 +43,13 @@ estado_subindo = function()
     //se subir o suficiente, eh destruido
     if (y < ystart - sprite_height) 
     {
-        part_system_destroy(ps);
-        instance_destroy(id);
+        estado = estado_aberto;
+        
+        //alarme para destruir as particulas
+        alarm[0] = FPS;
     }
 }
+
+estado_aberto = function() {};
 
 estado = estado_parado;

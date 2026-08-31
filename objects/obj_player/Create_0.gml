@@ -1,5 +1,6 @@
 //efeitos
 inicia_efeito_squash();
+inicia_efeito_brilho();
 
 //velocidade e aplica_velocidade
 max_hspd = 2;
@@ -18,8 +19,10 @@ estado = noone;
 powerup_tinta = false;
 
 dir = 1; //direção para espelhar o player
-colisao = [layer_tilemap_get_id("Tile_Level"), obj_colisor];
-chaves = 0;
+
+colisao = [layer_tilemap_get_id("Tile_Level"), obj_colisor]; //colisoes do player
+
+chaves = 0; //quantidade de chaves q tenho
 
 
 //metodos de movimentação

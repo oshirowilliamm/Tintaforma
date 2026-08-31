@@ -1,5 +1,7 @@
 if (!alvo) exit;
 
+//alternando opacidade
+image_alpha = speed / 6;
 
 //se esticando 
 image_xscale = lerp(image_xscale, speed * 5, .1);
@@ -34,13 +36,20 @@ else
     //se destruindo
     if (_player)
     {
-        //efeito de squash no player
+        //efeitos no player
         with (_player) 
         {
+            //squash
             if (variable_global_exists("efeito_squash"))
             {
                 var _escala = random_range(-.1, .3);
                 efeito_squash(1 + _escala, 1 + _escala);
+            }
+            
+            //brilho
+            if (variable_global_exists("aplica_efeito_brilho"))
+            {
+                aplica_efeito_brilho(, .8);
             }
         }
         

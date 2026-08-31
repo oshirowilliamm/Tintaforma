@@ -17,7 +17,8 @@ movendo = function()
 explosao = function()
 {
     //criando as particulas
-    repeat (20) 
+    var _qtd = random_range(20, 40);
+    repeat (_qtd) 
     {
     	var _part = instance_create_depth(x, y, depth - 1, obj_part_powerup);
         

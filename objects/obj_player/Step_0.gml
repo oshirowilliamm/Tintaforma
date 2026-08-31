@@ -3,6 +3,7 @@ estado();
 
 //efeitos
 retorna_squash();
+retorna_efeito_brilho();
 
 
 //debug

@@ -1,7 +1,10 @@
 {
   "$GMObject":"",
   "%Name":"obj_dado",
-  "eventList":[],
+  "eventList":[
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+  ],
   "managed":true,
   "name":"obj_dado",
   "overriddenProperties":[],
@@ -10,8 +13,8 @@
     "path":"folders/Objects/Level/Blocos.yy",
   },
   "parentObjectId":{
-    "name":"obj_colisor",
-    "path":"objects/obj_colisor/obj_colisor.yy",
+    "name":"obj_oneway",
+    "path":"objects/obj_oneway/obj_oneway.yy",
   },
   "persistent":false,
   "physicsAngularDamping":0.1,
@@ -26,7 +29,13 @@
   "physicsShape":1,
   "physicsShapePoints":[],
   "physicsStartAwake":true,
-  "properties":[],
+  "properties":[
+    {"$GMObjectProperty":"v2","%Name":"estado_inicial","filters":[],"listItems":[
+        "\"estado_azul\"",
+        "\"estado_roxo\"",
+      ],"multiselect":false,"name":"estado_inicial","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"\"estado_azul\"","varType":6,},
+    {"$GMObjectProperty":"v2","%Name":"tempo_troca","filters":[],"listItems":[],"multiselect":false,"name":"tempo_troca","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"1.0","varType":0,},
+  ],
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
