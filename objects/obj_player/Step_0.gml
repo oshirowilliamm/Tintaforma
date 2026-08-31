@@ -1,12 +1,17 @@
 movimento();
 estado();
-remove_colisao_oneway();
 
 //efeitos
 retorna_squash();
 retorna_efeito_brilho();
 
+//outras funções
+remove_colisao_oneway();
+coyote_jump();
+buffer_jump();
+
+
 
 //debug
 ativa_debug();
-if (keyboard_check_pressed(ord("R"))) cria_transicao_inicia(room);
+restart();

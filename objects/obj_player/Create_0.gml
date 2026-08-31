@@ -9,6 +9,21 @@ max_vspd = 5;
 vspd = 0;
 grav = .3;
 
+//variaveis para pulo duplo
+qtd_pulo = 1;
+qtd_pulo_atual = qtd_pulo;
+
+//variaveis para coyote jump
+coyote_tempo = FPS * .1;
+coyote_timer = coyote_tempo;
+
+//variaveis do buffer do pulo
+buffer_tempo = 10;
+buffer_timer = 0;
+
+//variaveis do corner correction
+corner_pixels = 8;
+
 //verifica se ta colidindo com o chao
 chao = false;
 chao_tinta = false;
@@ -35,6 +50,7 @@ inputs = function()
     left    = keyboard_check(ord("A"));
     right   = keyboard_check(ord("D"));
     jump    = keyboard_check_pressed(vk_space);
+    jump_r  = keyboard_check_released(vk_space);
     tinta   = keyboard_check_pressed(ord("E"));
     
     keyboard_set_map(vk_left, ord("A"));
@@ -60,9 +76,11 @@ aplica_velocidade = function()
         y = round(y);
         
         //pulo
-        if (jump)
+        if (jump || buffer_timer)
         {
             vspd = -max_vspd;
+            
+            buffer_timer = 0;
         }
     }
     
@@ -131,9 +149,12 @@ troca_estado = function(_estado, _sprites)
     lista_sprite = _sprites;
 }
 
+
+
+//metodos para pulo
 troca_estado_pulo = function()
 {
-    if (jump) 
+    if (jump || buffer_timer) 
     {
         troca_estado(estado_jump, [spr_player_jump_inicia, spr_player_jump_cima]);
         
@@ -148,6 +169,143 @@ troca_estado_pulo = function()
     {
         troca_estado(estado_jump, [spr_player_jump_inicia, spr_player_jump_cima]);
     }
+}
+
+bater_teto = function()
+{
+    //pegando as colisões fora o oneway
+    var _colisoes = [obj_colisor, layer_tilemap_get_id("Tile_Level")];
+    
+    //se eu bater no teto
+    if (place_meeting(x, y + vspd, _colisoes)) 
+    {
+        var _corner = corner_correction(_colisoes);
+        
+        //zerando o vspd se ele não teve um corner correction
+        if (!_corner) vspd = 0;
+    }
+}
+
+pulo_controlado = function()
+{
+    //se parar de apertar o botão de pular, para de subir
+    if (jump_r)
+    {
+        vspd *= .5;
+    }
+}
+
+pulo_duplo = function()
+{
+    if (qtd_pulo_atual > 0 && jump)
+    {
+        //mudando sprite
+        indice = 0;
+        lista_sprite = [spr_player_jump_inicia, spr_player_jump_cima];
+        
+        //pulando
+        vspd = -max_vspd;
+        qtd_pulo_atual--;
+    }
+}
+
+coyote_jump = function()
+{
+    checa_chao();
+    
+    //não toquei no chão
+    if (!chao) 
+    {
+        coyote_timer--;
+    }
+    //toquei no chão
+    else
+    {
+        coyote_timer = coyote_tempo;
+    }
+}
+
+pula_coyote_jump = function()
+{
+    if (coyote_timer > 0 && jump) 
+    {
+        //mudando sprite
+        indice = 0;
+        lista_sprite = [spr_player_jump_inicia, spr_player_jump_cima];
+        
+        //pulando
+        vspd = -max_vspd;
+        qtd_pulo_atual--;
+        
+        //criando particula de pulo
+        var _part = instance_create_depth(x, y, depth - 1, obj_part_player);
+        _part.sprite_index = spr_pulo_particula;
+        
+        //efeito squash
+        efeito_squash(.2, 1.8);
+        
+        //zerando o coyote timer
+        coyote_timer = 0;
+    }
+}
+
+buffer_jump = function()
+{
+    inputs();
+    checa_chao();
+    
+    //não toquei no chão
+    if (!chao) 
+    {
+        //pulando no meio do ar
+        if (jump) buffer_timer = buffer_tempo;
+        
+        //diminuindo o buffer
+        if (buffer_timer > 0) buffer_timer--;
+    }
+}
+
+corner_correction = function(_colisoes)
+{
+    //se estou indo pra cima
+    if (vspd < 0)
+    {
+        //se estou indo pra direita
+        //checando todos os pixels da minha borda
+        for (var i = 0; i < corner_pixels; i++)
+        {
+            //vendo se esse pixel está livre
+            var _livre = !place_meeting(x + i, y + vspd, _colisoes);
+            
+            //se estiver livre, eu movo o player até ele
+            if (_livre)
+            {
+                show_debug_message("corner correction");
+                
+                x = lerp(x, x + i, .2);
+                return true;
+            }
+        }
+        
+        //se estou indo pra esquerda
+        //checando todos os pixels da minha borda
+        for (var i = 0; i < corner_pixels; i++)
+        {
+            //vendo se esse pixel está livre
+            var _livre = !place_meeting(x - i, y + vspd, _colisoes);
+            
+            //se estiver livre, eu movo o player até ele
+            if (_livre)
+            {
+                show_debug_message("corner correction");
+                
+                x = lerp(x, x - i, .2);
+                return true;
+            }
+        }
+    }
+    
+    return false;
 }
 
 
@@ -204,12 +362,21 @@ estado_run = function()
 }
 
 estado_jump = function()
-{
-    aplica_velocidade();
+{ 
+    static _inicio_pulo = true;
     
-    //se eu bater no teto, zero o vspd
-    var _colisoes = [obj_colisor, layer_tilemap_get_id("Tile_Level")];
-    if (place_meeting(x, y + vspd, _colisoes)) vspd = 0;
+    //verificando se estou no inicio do pulo
+    if (_inicio_pulo)
+    {
+        qtd_pulo_atual--;
+        
+        _inicio_pulo = false;
+    }
+    
+    aplica_velocidade();
+    pulo_duplo();
+    pula_coyote_jump();
+    bater_teto();
     
     //sprite pulando cima
     if (vspd < 0)
@@ -222,6 +389,8 @@ estado_jump = function()
             var _pos = array_get_index(colisao, obj_oneway);
             array_delete(colisao, _pos, 1);
         }
+        
+        pulo_controlado();
     }
     //sprite pulando baixo
     else
@@ -250,13 +419,19 @@ estado_jump = function()
         //efeito squash
         efeito_squash(1.2, .5);
         
+        //avisando que pode iniciar o pulo novamente
+        _inicio_pulo = true;
+        
+        //resetando quantidade de pulos
+        qtd_pulo_atual = qtd_pulo;
+        
         troca_estado(estado_idle, [spr_player_pousando, spr_player_idle]);
     }
 }
 
 
 
-//estados powerup
+//estados powerup   
 estado_powerup_inicio = function()
 {
     hspd = 0;
@@ -406,6 +581,13 @@ remove_colisao_oneway = function()
     }
 }
 
+restart = function()
+{
+    if (keyboard_check_pressed(ord("R"))) 
+    {
+        cria_transicao_inicia(room);
+    }
+}
 
 
 #region DEBUGS

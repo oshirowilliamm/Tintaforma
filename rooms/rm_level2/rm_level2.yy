@@ -45,9 +45,10 @@
     {"$GMRTileLayer":"","%Name":"Tile_Tinta","depth":500,"effectEnabled":true,"effectType":null,"gridX":32,"gridY":32,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"layers":[],"name":"Tile_Tinta","properties":[],"resourceType":"GMRTileLayer","resourceVersion":"2.0","tiles":{"SerialiseHeight":12,"SerialiseWidth":40,"TileCompressedData":[-369,-2147483648,-15,61,-96,-2147483648,],"TileDataFormat":1,},"tilesetId":{"name":"tl_level","path":"tilesets/tl_level/tl_level.yy",},"userdefinedDepth":false,"visible":true,"x":0,"y":0,},
     {"$GMRTileLayer":"","%Name":"Tile_Level","depth":600,"effectEnabled":true,"effectType":null,"gridX":32,"gridY":32,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"layers":[],"name":"Tile_Level","properties":[],"resourceType":"GMRTileLayer","resourceVersion":"2.0","tiles":{"SerialiseHeight":12,"SerialiseWidth":40,"TileCompressedData":[
           -44,66,1,39,-5,98,1,40,-31,66,3,39,98,99,-5,0,1,97,-16,98,1,40,-13,66,2,39,99,-24,0,4,97,98,98,40,-10,
-          66,1,67,-28,0,1,97,-6,98,1,40,-3,66,1,67,-12,0,1,33,-7,34,1,35,-9,0,-4,-2147483648,6,0,97,40,66,98,99,
-          -12,0,1,97,-7,98,5,99,0,0,-2147483648,-2147483648,-6,0,-3,-2147483648,-2,0,2,97,98,-20,0,-5,-2147483648,
-          -8,0,-5,-2147483648,-22,0,-4,-2147483648,-12,0,-2,-2147483648,-2,0,-40,34,-80,66,
+          66,1,67,-28,0,1,97,-6,98,1,40,-3,66,1,67,-5,0,2,33,35,-5,0,1,33,-7,34,1,35,-9,0,-4,-2147483648,6,0,97,
+          40,66,98,99,-5,0,2,97,99,-5,0,1,97,-7,98,5,99,0,0,-2147483648,-2147483648,-6,0,-3,-2147483648,-2,0,2,
+          97,98,-20,0,-5,-2147483648,-8,0,-5,-2147483648,-22,0,-4,-2147483648,-12,0,-2,-2147483648,-2,0,-40,34,
+          -80,66,
         ],"TileDataFormat":1,},"tilesetId":{"name":"tl_level","path":"tilesets/tl_level/tl_level.yy",},"userdefinedDepth":false,"visible":true,"x":0,"y":0,},
     {"$GMRInstanceLayer":"","%Name":"Portas","depth":700,"effectEnabled":true,"effectType":null,"gridX":4,"gridY":4,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"instances":[
         {"$GMRInstance":"v4","%Name":"inst_501E9CCD2","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_501E9CCD2","objectId":{"name":"obj_porta","path":"objects/obj_porta/obj_porta.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":624.0,"y":144.0,},
