@@ -280,8 +280,6 @@ corner_correction = function(_colisoes)
             //se estiver livre, eu movo o player até ele
             if (_livre)
             {
-                show_debug_message("corner correction");
-                
                 x = lerp(x, x + i, .2);
                 return true;
             }
@@ -297,8 +295,6 @@ corner_correction = function(_colisoes)
             //se estiver livre, eu movo o player até ele
             if (_livre)
             {
-                show_debug_message("corner correction");
-                
                 x = lerp(x, x - i, .2);
                 return true;
             }
