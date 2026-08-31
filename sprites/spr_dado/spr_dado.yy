@@ -1,8 +1,8 @@
 {
   "$GMSprite":"v2",
   "%Name":"spr_dado",
-  "bboxMode":0,
-  "bbox_bottom":13,
+  "bboxMode":2,
+  "bbox_bottom":2,
   "bbox_left":0,
   "bbox_right":13,
   "bbox_top":0,

@@ -18,6 +18,7 @@
     {"name":"inst_34097BBD","path":"rooms/rm_level1/rm_level1.yy",},
     {"name":"inst_2308000D","path":"rooms/rm_level1/rm_level1.yy",},
     {"name":"inst_5D9E6445","path":"rooms/rm_level1/rm_level1.yy",},
+    {"name":"inst_4CF6E94A","path":"rooms/rm_level1/rm_level1.yy",},
   ],
   "isDnd":false,
   "layers":[
@@ -41,6 +42,7 @@
         {"$GMRInstance":"v4","%Name":"inst_5D9E6445","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_5D9E6445","objectId":{"name":"obj_placa","path":"objects/obj_placa/obj_placa.yy",},"properties":[
             {"$GMOverriddenProperty":"v1","%Name":"","name":"","objectId":{"name":"obj_placa","path":"objects/obj_placa/obj_placa.yy",},"propertyId":{"name":"texto","path":"objects/obj_placa/obj_placa.yy",},"resourceType":"GMOverriddenProperty","resourceVersion":"2.0","value":"\"Use [rainbow]WASD[/] para se [wave]mover[/] e Use [rainbow]Espaço[/] para [wave]pular[/]\"",},
           ],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":212.0,"y":112.0,},
+        {"$GMRInstance":"v4","%Name":"inst_4CF6E94A","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_4CF6E94A","objectId":{"name":"obj_dado","path":"objects/obj_dado/obj_dado.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":152.0,"y":72.0,},
       ],"layers":[],"name":"Level","properties":[],"resourceType":"GMRInstanceLayer","resourceVersion":"2.0","userdefinedDepth":false,"visible":true,},
     {"$GMRAssetLayer":"","%Name":"Decoracoes","assets":[
         {"$GMRSpriteGraphic":"v1","%Name":"graphic_28B8FF70","animationSpeed":1.0,"colour":4294967295,"frozen":false,"headPosition":0.0,"ignore":false,"inheritedItemId":null,"inheritItemSettings":false,"name":"graphic_28B8FF70","resourceType":"GMRSpriteGraphic","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"spriteId":{"name":"spr_janela_grande","path":"sprites/spr_janela_grande/spr_janela_grande.yy",},"x":112.0,"y":112.0,},

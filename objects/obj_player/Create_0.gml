@@ -25,6 +25,8 @@ colisao = [layer_tilemap_get_id("Tile_Level"), obj_colisor]; //colisoes do playe
 chaves = 0; //quantidade de chaves q tenho
 
 
+
+
 //metodos de movimentação
 inputs = function()
 {
@@ -167,6 +169,10 @@ estado_jump = function()
 {
     aplica_velocidade();
     
+    //se eu bater no teto, zero o vspd
+    var _colisoes = [obj_colisor, layer_tilemap_get_id("Tile_Level")];
+    if (place_meeting(x, y + vspd, _colisoes)) vspd = 0;
+    
     //sprite pulando cima
     if (vspd < 0)
     {
@@ -268,6 +274,7 @@ estado_tinta_loop = function()
     
     //ativando movimento
     aplica_velocidade();
+    vspd = 0;
     
     //limitando o movimento no chao de tinta
     var _x = x + (hspd * 11);
@@ -325,6 +332,18 @@ abre_porta = function()
             
             //tirando a chave
             chaves--;
+        }
+    }
+}
+
+remove_colisao_oneway = function()
+{
+    if (instance_place(x, y, obj_oneway))
+    {
+        if (array_contains(colisao, obj_oneway))
+        {
+            var _index = array_get_index(colisao, obj_oneway);
+            array_delete(colisao, _index, 1);
         }
     }
 }

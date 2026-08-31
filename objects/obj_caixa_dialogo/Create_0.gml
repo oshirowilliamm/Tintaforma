@@ -11,6 +11,8 @@ destroi = false;
 desenha_texto = false;
 alpha = 0;
 
+typist = scribble_typist();
+typist.in(1, 50);
 
 
 iniciando = function()
@@ -67,5 +69,5 @@ desenha_dialogo = function()
     _txt.starting_format("fnt_game", c_white)
         .scale(.1)
         .wrap(sprite_width - _margem * 2)
-        .draw(_x, _y);
+        .draw(_x, _y, typist);
 }
