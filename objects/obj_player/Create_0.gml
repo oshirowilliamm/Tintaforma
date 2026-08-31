@@ -24,7 +24,9 @@ colisao = [layer_tilemap_get_id("Tile_Level"), obj_colisor]; //colisoes do playe
 
 chaves = 0; //quantidade de chaves q tenho
 
-
+//variaveis para sprite
+lista_sprite = [spr_player_para, spr_player_idle];
+indice = 0;
 
 
 //metodos de movimentação
@@ -61,13 +63,6 @@ aplica_velocidade = function()
         if (jump)
         {
             vspd = -max_vspd;
-            
-            //criando particula de pulo
-            var _part = instance_create_depth(x, y, depth - 1, obj_part_player);
-            _part.sprite_index = spr_pulo_particula;
-            
-            //efeito squash
-            efeito_squash(.2, 1.8);
         }
     }
     
@@ -116,6 +111,45 @@ troca_estado_animacao = function(_estado)
     }
 }
 
+transicao_sprites = function()
+{
+    troca_sprite(lista_sprite[indice]);
+    
+    //quando acabar a animação, muda pra sprite normal
+    if (image_index > image_number - 1)
+    {
+        var _qtd = array_length(lista_sprite) - 1;
+        
+        if (indice < _qtd) indice++;
+    }
+}
+
+troca_estado = function(_estado, _sprites)
+{
+    estado = _estado;
+    indice = 0;
+    lista_sprite = _sprites;
+}
+
+troca_estado_pulo = function()
+{
+    if (jump) 
+    {
+        troca_estado(estado_jump, [spr_player_jump_inicia, spr_player_jump_cima]);
+        
+        //criando particula de pulo
+        var _part = instance_create_depth(x, y, depth - 1, obj_part_player);
+        _part.sprite_index = spr_pulo_particula;
+        
+        //efeito squash
+        efeito_squash(.2, 1.8);
+    }
+    if (!chao)
+    {
+        troca_estado(estado_jump, [spr_player_jump_inicia, spr_player_jump_cima]);
+    }
+}
+
 
 
 //estados de movimentação
@@ -123,19 +157,21 @@ estado_idle = function()
 {
     aplica_velocidade();
     
-    troca_sprite(spr_player_idle);
+    transicao_sprites();
     
     //mudando estado para run
-    if (right xor left) estado = estado_run;
+    if (right xor left)
+    { 
+        troca_estado(estado_run, [spr_player_inicia, spr_player_run]);
+    }
     
     //mudando estado para jump
-    if (jump) estado = estado_jump;
-    if (!chao) estado = estado_jump;
+    troca_estado_pulo();
     
     //mudando estado para tinta
     if (tinta && powerup_tinta && chao_tinta) 
     {
-        estado = estado_tinta_entrando;
+        troca_estado(estado_tinta_entrando, [spr_player_tinta_entrar]);
     }
     
     //metodos especiais
@@ -146,19 +182,21 @@ estado_run = function()
 {
     aplica_velocidade();
     
-    troca_sprite(spr_player_run);
+    transicao_sprites();
     
     //mudando estado para idle
-    if (hspd == 0) estado = estado_idle;
+    if (hspd == 0) 
+    {
+        troca_estado(estado_idle, [spr_player_para, spr_player_idle]);
+    }
     
     //mudando estado para jump
-    if (jump) estado = estado_jump;
-    if (!chao) estado = estado_jump;
+    troca_estado_pulo();
     
     //mudando estado para tinta
     if (tinta && powerup_tinta && chao_tinta) 
     {
-        estado = estado_tinta_entrando;
+        troca_estado(estado_tinta_entrando, [spr_player_tinta_entrar]);
     }
     
     //metodos especiais
@@ -176,7 +214,7 @@ estado_jump = function()
     //sprite pulando cima
     if (vspd < 0)
     {
-        troca_sprite(spr_player_jump_cima);
+        transicao_sprites();
         
         //removendo a colisão oneway
         if (array_contains(colisao, obj_oneway))
@@ -188,7 +226,9 @@ estado_jump = function()
     //sprite pulando baixo
     else
     {
-        troca_sprite(spr_player_jump_baixo);
+        indice = 0;
+        lista_sprite = [spr_player_jump_comeca_queda, spr_player_jump_baixo];
+        transicao_sprites();
         
         //adicionando a colisão oneway
         if (!place_meeting(x, y, obj_oneway))
@@ -210,7 +250,7 @@ estado_jump = function()
         //efeito squash
         efeito_squash(1.2, .5);
         
-        estado = estado_idle;
+        troca_estado(estado_idle, [spr_player_pousando, spr_player_idle]);
     }
 }
 
@@ -222,19 +262,24 @@ estado_powerup_inicio = function()
     hspd = 0;
     vspd = 0;
     troca_sprite(spr_player_powerup_inicio);
-    troca_estado_animacao(estado_powerup_meio);
+    
+    //trocando de estado no fim da animação
+    if (image_index > image_number - 1)
+    {
+        troca_estado(estado_powerup_meio, [spr_player_powerup_meio]);
+    }
 }
 
 estado_powerup_meio = function()
 {
     hspd = 0;
     vspd = 0;
-    troca_sprite(spr_player_powerup_meio);
+    transicao_sprites();
     
     //saindo do estado se n tem mais particulas entrando em mim
     if (!instance_exists(obj_part_powerup))
     {
-        estado = estado_powerup_fim;
+        troca_estado(estado_powerup_fim, [spr_player_powerup_fim]);
     }
 }
 
@@ -242,8 +287,13 @@ estado_powerup_fim = function()
 {
     hspd = 0;
     vspd = 0;
-    troca_sprite(spr_player_powerup_fim);
-    troca_estado_animacao(estado_idle);
+    transicao_sprites();
+    
+    //trocando de estado no fim da animação
+    if (image_index > image_number - 1)
+    {
+        troca_estado(estado_idle, [spr_player_idle]);
+    }
 }
 
 
@@ -251,7 +301,7 @@ estado_powerup_fim = function()
 //estados tinta
 estado_tinta_entrando = function()
 {
-    troca_sprite(spr_player_tinta_entrar);
+    transicao_sprites();
     
     //zerando velocidade
     hspd = 0;
@@ -263,13 +313,16 @@ estado_tinta_entrando = function()
         _part.sprite_index = spr_tinta_entrar_part;
     }
     
-    
-    troca_estado_animacao(estado_tinta_loop);
+    //trocando de estado no fim da animação
+    if (image_index > image_number - 1)
+    {
+        troca_estado(estado_tinta_loop, [spr_player_tinta_inicia, spr_player_tinta_loop]);
+    }
 }
 
 estado_tinta_loop = function()
 {
-    troca_sprite(spr_player_tinta_loop);
+    transicao_sprites();
     mask_index = spr_player_tinta_loop;
     
     //ativando movimento
@@ -293,20 +346,25 @@ estado_tinta_loop = function()
             var _part = instance_create_depth(x, y, depth - 1, obj_part_player);
             _part.sprite_index = spr_tinta_sair_part;
             
-            estado = estado_tinta_saindo;
+            troca_estado(estado_tinta_saindo, [spr_player_tinta_saindo, spr_player_tinta_sair]);
         }
     }
 }
 
 estado_tinta_saindo = function()
 {
-    troca_sprite(spr_player_tinta_sair);
     mask_index = spr_player_idle;
     
     //zerando velocidade
     hspd = 0;
     
-    troca_estado_animacao(estado_idle);
+    //trocando de estado no fim da animação
+    if (image_index >= image_number - 1 && sprite_index == spr_player_tinta_sair)
+    {
+        troca_estado(estado_idle, [spr_player_idle]);
+    }
+    
+    transicao_sprites();
 }
 
 
