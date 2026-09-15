@@ -9,6 +9,7 @@ retorna_efeito_brilho();
 remove_colisao_oneway();
 coyote_jump();
 buffer_jump();
+segue_camera();
 
 
 

@@ -43,6 +43,18 @@ chaves = 0; //quantidade de chaves q tenho
 lista_sprite = [spr_player_para, spr_player_idle];
 indice = 0;
 
+//variaveis pra camera
+view_w = camera_get_view_width(view_camera[0]);
+view_h = camera_get_view_height(view_camera[0]);
+cam_x = camera_get_view_x(view_camera[0]);
+cam_y = camera_get_view_y(view_camera[0]);
+marg_left   = 140;
+marg_right  = 140;
+marg_top    = 90;
+marg_bottom = 40;
+
+
+
 
 //metodos de movimentação
 inputs = function()
@@ -51,7 +63,7 @@ inputs = function()
     right   = keyboard_check(ord("D"));
     jump    = keyboard_check_pressed(vk_space);
     jump_r  = keyboard_check_released(vk_space);
-    tinta   = keyboard_check_pressed(ord("E"));
+    tinta   = keyboard_check_pressed(vk_control);
     
     keyboard_set_map(vk_left, ord("A"));
     keyboard_set_map(vk_right, ord("D"));
@@ -106,6 +118,78 @@ checa_chao = function()
 ajusta_escala = function()
 {
     if (hspd != 0) dir = sign(hspd);
+}
+
+
+
+//outros metodos
+abre_porta = function()
+{
+    //colidindo com a porta
+    var _porta = instance_place(x + hspd, y, obj_porta);
+    
+    if (_porta)
+    {
+        //se tem chaves e a porta esta parada
+        if (chaves > 0 && _porta.estado == _porta.estado_parado)
+        {
+            //faz a porta subir
+            _porta.estado = _porta.estado_subindo;
+            
+            //tirando a chave
+            chaves--;
+        }
+    }
+}
+
+remove_colisao_oneway = function()
+{
+    if (instance_place(x, y, obj_oneway))
+    {
+        if (array_contains(colisao, obj_oneway))
+        {
+            var _index = array_get_index(colisao, obj_oneway);
+            array_delete(colisao, _index, 1);
+        }
+    }
+}
+
+restart = function()
+{
+    if (keyboard_check_pressed(ord("R"))) 
+    {
+        cria_transicao_inicia(room);
+    }
+}
+
+segue_camera = function()
+{
+    //horizontal
+    if (x < cam_x + marg_left)
+    {
+        cam_x = x - marg_left;
+    }
+    else if (x > cam_x + view_w - marg_right)
+    {
+        cam_x = x - view_w + marg_right;
+    }
+    
+    //vertical
+    if (y < cam_y + marg_top)
+    {
+        cam_y = y - marg_top;
+    }
+    else if (y > cam_y + view_h - marg_bottom)
+    {
+        cam_y = y - view_h + marg_bottom;
+    }
+    
+    //limitando a camera pra n sair da room
+    cam_x = clamp(cam_x, 0, room_width - view_w);
+    cam_y = clamp(cam_y, 0, room_height - view_h);
+    
+    //setando a posição da camera
+    camera_set_view_pos(view_camera[0], cam_x, cam_y);
 }
 
 
@@ -543,47 +627,6 @@ estado_tinta_saindo = function()
 //iniciando meu estado
 estado = estado_idle;
 
-
-
-//outros metodos
-abre_porta = function()
-{
-    //colidindo com a porta
-    var _porta = instance_place(x + hspd, y, obj_porta);
-    
-    if (_porta)
-    {
-        //se tem chaves e a porta esta parada
-        if (chaves > 0 && _porta.estado == _porta.estado_parado)
-        {
-            //faz a porta subir
-            _porta.estado = _porta.estado_subindo;
-            
-            //tirando a chave
-            chaves--;
-        }
-    }
-}
-
-remove_colisao_oneway = function()
-{
-    if (instance_place(x, y, obj_oneway))
-    {
-        if (array_contains(colisao, obj_oneway))
-        {
-            var _index = array_get_index(colisao, obj_oneway);
-            array_delete(colisao, _index, 1);
-        }
-    }
-}
-
-restart = function()
-{
-    if (keyboard_check_pressed(ord("R"))) 
-    {
-        cria_transicao_inicia(room);
-    }
-}
 
 
 #region DEBUGS
