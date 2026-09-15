@@ -10,8 +10,8 @@
   "name":"obj_part_powerup",
   "overriddenProperties":[],
   "parent":{
-    "name":"Itens",
-    "path":"folders/Objects/Itens.yy",
+    "name":"Level",
+    "path":"folders/Objects/Level.yy",
   },
   "parentObjectId":null,
   "persistent":false,

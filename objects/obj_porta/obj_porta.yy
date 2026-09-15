@@ -11,8 +11,8 @@
   "name":"obj_porta",
   "overriddenProperties":[],
   "parent":{
-    "name":"Itens",
-    "path":"folders/Objects/Itens.yy",
+    "name":"Level",
+    "path":"folders/Objects/Level.yy",
   },
   "parentObjectId":{
     "name":"obj_colisor",

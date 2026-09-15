@@ -14,7 +14,7 @@ qtd_pulo = 1;
 qtd_pulo_atual = qtd_pulo;
 
 //variaveis para coyote jump
-coyote_tempo = FPS * .1;
+coyote_tempo = 5;
 coyote_timer = coyote_tempo;
 
 //variaveis do buffer do pulo
@@ -280,7 +280,7 @@ corner_correction = function(_colisoes)
             //se estiver livre, eu movo o player até ele
             if (_livre)
             {
-                x = lerp(x, x + i, .2);
+                x = x + i;
                 return true;
             }
         }
@@ -295,7 +295,7 @@ corner_correction = function(_colisoes)
             //se estiver livre, eu movo o player até ele
             if (_livre)
             {
-                x = lerp(x, x - i, .2);
+                x = x - i;
                 return true;
             }
         }

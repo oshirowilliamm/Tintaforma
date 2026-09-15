@@ -6,8 +6,8 @@
   "name":"obj_colisor",
   "overriddenProperties":[],
   "parent":{
-    "name":"Level",
-    "path":"folders/Objects/Level.yy",
+    "name":"Outros",
+    "path":"folders/Objects/Outros.yy",
   },
   "parentObjectId":null,
   "persistent":false,

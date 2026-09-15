@@ -1,4 +1,6 @@
-scribble_anim_wave(.5, .1, .1);
+scribble_anim_wave(.5, .3, .1);
+scribble_anim_wheel(.3, .5, .1);
+scribble_anim_shake(.3, .2);
 
 image_alpha = 0;
 image_xscale = 0;

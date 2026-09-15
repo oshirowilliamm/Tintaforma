@@ -6,8 +6,8 @@
   "name":"obj_plataforma_grande",
   "overriddenProperties":[],
   "parent":{
-    "name":"Blocos",
-    "path":"folders/Objects/Level/Blocos.yy",
+    "name":"Plataformas",
+    "path":"folders/Objects/Plataformas.yy",
   },
   "parentObjectId":{
     "name":"obj_oneway",

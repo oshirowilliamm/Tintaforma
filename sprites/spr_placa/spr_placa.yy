@@ -26,7 +26,7 @@
   "origin":7,
   "parent":{
     "name":"Decoracao",
-    "path":"folders/Sprites/Level/Decoracao.yy",
+    "path":"folders/Sprites/Decoracao.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",
