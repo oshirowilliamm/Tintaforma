@@ -43,6 +43,10 @@ chaves = 0; //quantidade de chaves q tenho
 lista_sprite = [spr_player_para, spr_player_idle];
 indice = 0;
 
+//variaveis pro som de passo
+tempo_passo = 25;
+timer_passo = tempo_passo;
+
 //variaveis pra camera
 view_w = camera_get_view_width(view_camera[0]);
 view_h = camera_get_view_height(view_camera[0]);
@@ -91,8 +95,6 @@ aplica_velocidade = function()
         if (jump || buffer_timer)
         {
             vspd = -max_vspd;
-            
-            buffer_timer = 0;
         }
     }
     
@@ -138,6 +140,9 @@ abre_porta = function()
             
             //tirando a chave
             chaves--;
+            
+            //som
+            toca_som(snd_porta);
         }
     }
 }
@@ -248,6 +253,11 @@ troca_estado_pulo = function()
         
         //efeito squash
         efeito_squash(.2, 1.8);
+        
+        //som
+        toca_som(snd_pulo, .4);
+        
+        buffer_timer = 0;
     }
     if (!chao)
     {
@@ -330,6 +340,9 @@ pula_coyote_jump = function()
         
         //zerando o coyote timer
         coyote_timer = 0;
+        
+        //som
+        toca_som(snd_pulo, .4);
     }
 }
 
@@ -410,6 +423,7 @@ estado_idle = function()
     if (tinta && powerup_tinta && chao_tinta) 
     {
         troca_estado(estado_tinta_entrando, [spr_player_tinta_entrar]);
+        toca_som(snd_tinta_entra);
     }
     
     //metodos especiais
@@ -435,10 +449,22 @@ estado_run = function()
     if (tinta && powerup_tinta && chao_tinta) 
     {
         troca_estado(estado_tinta_entrando, [spr_player_tinta_entrar]);
+        toca_som(snd_tinta_entra);
     }
     
     //metodos especiais
     abre_porta();
+    
+    //som de passo
+    if (timer_passo <= 0)
+    {
+        toca_som(snd_passo, .5);
+        timer_passo = tempo_passo;
+    }
+    else
+    {
+        timer_passo--;
+    }
 }
 
 estado_jump = function()
@@ -602,6 +628,7 @@ estado_tinta_loop = function()
             _part.sprite_index = spr_tinta_sair_part;
             
             troca_estado(estado_tinta_saindo, [spr_player_tinta_saindo, spr_player_tinta_sair]);
+            toca_som(snd_tinta_sai);
         }
     }
 }

@@ -5,6 +5,7 @@ if (place_meeting(x, y, obj_player))
     {
         dialogo = instance_create_layer(x, y, "Dialogo", obj_caixa_dialogo);
         dialogo.texto = texto;
+        toca_som(snd_placa);
     }
 }
 //destruindo a caixa de dialogo

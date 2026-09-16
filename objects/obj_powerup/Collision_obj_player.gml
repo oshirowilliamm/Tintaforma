@@ -12,4 +12,7 @@ if (alvo == noone)
     
     //avisando o player que pode usar o powerup
     other.powerup_tinta = true;
+    
+    //som
+    toca_som(snd_powerup);
 }

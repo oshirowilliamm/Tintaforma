@@ -1,0 +1,1 @@
+if (room == rm_level4) game_end();
