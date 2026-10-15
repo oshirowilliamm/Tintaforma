@@ -1,0 +1,1 @@
+cria_transicao_inicia(destino);

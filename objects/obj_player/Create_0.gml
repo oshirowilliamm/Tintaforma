@@ -31,13 +31,17 @@ layer_tinta = layer_tilemap_get_id("Tile_Tinta");
 
 //variaveis de estado
 estado = noone;
-powerup_tinta = false;
 
-dir = 1; //direção para espelhar o player
+//direção para espelhar o player
+dir = 1; 
 
-colisao = [layer_tilemap_get_id("Tile_Level"), obj_colisor]; //colisoes do player
+//colisoes do player
+colisao = [layer_tilemap_get_id("Tile_Level"), obj_colisor]; 
 
-chaves = 0; //quantidade de chaves q tenho
+//quantidade de chaves q tenho
+chaves = 0; 
+minha_chaves = [];
+abrindo_porta = false;
 
 //variaveis para sprite
 lista_sprite = [spr_player_para, spr_player_idle];
@@ -68,6 +72,7 @@ inputs = function()
     jump    = keyboard_check_pressed(vk_space);
     jump_r  = keyboard_check_released(vk_space);
     tinta   = keyboard_check_pressed(vk_control);
+    corre   = keyboard_check(vk_shift);
     
     keyboard_set_map(vk_left, ord("A"));
     keyboard_set_map(vk_right, ord("D"));
@@ -122,6 +127,20 @@ ajusta_escala = function()
     if (hspd != 0) dir = sign(hspd);
 }
 
+corrida = function()
+{
+    if (estado == estado_tinta_entrando || estado == estado_tinta_loop || estado == estado_tinta_saindo) return;
+    
+    if (corre && global.powerup_run)
+    {
+        max_hspd = 4;
+    }
+    else 
+    {
+        max_hspd = 2;
+    }
+}
+
 
 
 //outros metodos
@@ -133,16 +152,16 @@ abre_porta = function()
     if (_porta)
     {
         //se tem chaves e a porta esta parada
-        if (chaves > 0 && _porta.estado == _porta.estado_parado)
+        if (chaves > 0 && _porta.estado == _porta.estado_parado && !abrindo_porta)
         {
-            //faz a porta subir
-            _porta.estado = _porta.estado_subindo;
+            abrindo_porta = true;
             
             //tirando a chave
             chaves--;
             
-            //som
-            toca_som(snd_porta);
+            //avisando a ultima chave pra abrir a porta
+            minha_chaves[chaves].abre_porta = true;
+            minha_chaves[chaves].porta_alvo = _porta;
         }
     }
 }
@@ -165,36 +184,6 @@ restart = function()
     {
         cria_transicao_inicia(room);
     }
-}
-
-segue_camera = function()
-{
-    //horizontal
-    if (x < cam_x + marg_left)
-    {
-        cam_x = x - marg_left;
-    }
-    else if (x > cam_x + view_w - marg_right)
-    {
-        cam_x = x - view_w + marg_right;
-    }
-    
-    //vertical
-    if (y < cam_y + marg_top)
-    {
-        cam_y = y - marg_top;
-    }
-    else if (y > cam_y + view_h - marg_bottom)
-    {
-        cam_y = y - view_h + marg_bottom;
-    }
-    
-    //limitando a camera pra n sair da room
-    cam_x = clamp(cam_x, 0, room_width - view_w);
-    cam_y = clamp(cam_y, 0, room_height - view_h);
-    
-    //setando a posição da camera
-    camera_set_view_pos(view_camera[0], cam_x, cam_y);
 }
 
 
@@ -231,7 +220,7 @@ transicao_sprites = function()
     }
 }
 
-troca_estado = function(_estado, _sprites)
+troca_estado = function(_estado, _sprites = [spr_player_para, spr_player_idle])
 {
     estado = _estado;
     indice = 0;
@@ -420,7 +409,7 @@ estado_idle = function()
     troca_estado_pulo();
     
     //mudando estado para tinta
-    if (tinta && powerup_tinta && chao_tinta) 
+    if (tinta && global.powerup_tinta && chao_tinta) 
     {
         troca_estado(estado_tinta_entrando, [spr_player_tinta_entrar]);
         toca_som(snd_tinta_entra);
@@ -446,7 +435,7 @@ estado_run = function()
     troca_estado_pulo();
     
     //mudando estado para tinta
-    if (tinta && powerup_tinta && chao_tinta) 
+    if (tinta && global.powerup_tinta && chao_tinta) 
     {
         troca_estado(estado_tinta_entrando, [spr_player_tinta_entrar]);
         toca_som(snd_tinta_entra);
@@ -611,7 +600,7 @@ estado_tinta_loop = function()
     vspd = 0;
     
     //limitando o movimento no chao de tinta
-    var _x = x + (hspd * 11);
+    var _x = x + (sign(hspd) * 22);
     if (!place_meeting(_x, y + 1, layer_tinta))
     {
         hspd = 0;
@@ -651,6 +640,11 @@ estado_tinta_saindo = function()
 
 
 
+//outros estados
+estado_sem_controle = function() {};
+
+
+
 //iniciando meu estado
 estado = estado_idle;
 
@@ -675,7 +669,10 @@ estado = estado_idle;
         dbg_slider(ref_create(id, "grav"), 0, 1, "grav", .01);
         
         //powerup tinta
-        dbg_checkbox(ref_create(id, "powerup_tinta"), "Powerup Tinta"); 
+        dbg_checkbox(ref_create(global, "powerup_tinta"), "Powerup Tinta"); 
+        
+        //powerup run
+        dbg_checkbox(ref_create(global, "powerup_run"), "Powerup Corrida"); 
         
         //draw mask
         dbg_checkbox(ref_create(id, "draw_mask"), "Máscara de Colisão");

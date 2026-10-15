@@ -28,14 +28,14 @@
   "properties":[
     {"$GMObjectProperty":"v2","%Name":"destino","filters":[
         "GMRoom",
-      ],"listItems":[],"multiselect":false,"name":"destino","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"rm_level2","varType":5,},
+      ],"listItems":[],"multiselect":false,"name":"destino","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resource":{"name":"rm_level2","path":"rooms/rm_level2/rm_level2.yy",},"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"rm_level2","varType":5,},
   ],
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_colisao",
-    "path":"sprites/spr_colisao/spr_colisao.yy",
+    "name":"spr_muda_room",
+    "path":"sprites/spr_muda_room/spr_muda_room.yy",
   },
   "spriteMaskId":null,
   "visible":false,

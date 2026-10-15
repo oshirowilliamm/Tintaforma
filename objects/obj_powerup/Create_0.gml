@@ -1,4 +1,9 @@
-alvo = noone
+//me destruindo se ja fui desbloqueado
+if (variable_global_get(powerup)) instance_destroy();
+
+alvo = noone;
+
+
 
 movendo = function()
 {

@@ -11,7 +11,7 @@ if (alvo == noone)
     explosao();
     
     //avisando o player que pode usar o powerup
-    other.powerup_tinta = true;
+    variable_global_set(powerup, true);
     
     //som
     toca_som(snd_powerup);

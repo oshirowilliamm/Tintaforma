@@ -1,6 +1,7 @@
 estado = noone;
 tempo = tempo_troca * FPS;
-timer = tempo;
+
+
 
 estado_azul = function()
 {
