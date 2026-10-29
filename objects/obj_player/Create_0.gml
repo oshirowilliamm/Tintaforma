@@ -64,6 +64,15 @@ marg_bottom = 40;
 
 
 
+//metodo de inicialização do player
+inicia_player = function()
+{
+    if (!usar_spawn) return;
+    
+    x = global.spawn_x;
+    y = global.spawn_y;
+}
+
 //metodos de movimentação
 inputs = function()
 {
@@ -646,6 +655,7 @@ estado_sem_controle = function() {};
 
 
 //iniciando meu estado
+inicia_player();
 estado = estado_idle;
 
 

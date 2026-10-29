@@ -4,7 +4,9 @@ var _dist = point_distance(x, y, dest_x, dest_y);
 if (_dist > 2)
 {
     //criando o rastro do player
-    instance_create_depth(x, y, -100, obj_rastro_player);
+    var _rastro = instance_create_depth(x, y, -100, obj_rastro_player);
+    _rastro.sprite_index = sprite;
+    _rastro.image_xscale = xscale;
     
     //camera me seguindo
     camera_set_view_target(view_camera[0], id);
@@ -20,6 +22,9 @@ else
     {
         with (obj_player) 
         {
+            //deixando o player visivel de volta
+            visible = true;
+            
             //camera me seguindo
             camera_set_view_target(view_camera[0], id);
             

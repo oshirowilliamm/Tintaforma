@@ -15,4 +15,6 @@ if (alvo == noone)
     
     //som
     toca_som(snd_powerup);
+    
+    save_game();
 }
